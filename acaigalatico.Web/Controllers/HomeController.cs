@@ -51,6 +51,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> SendMessage(string nome, string email, string telefone, string assunto, string mensagem)
     {
         try

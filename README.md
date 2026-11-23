@@ -7,7 +7,7 @@ Sistema completo para uma açaiteria: **site para clientes**, **painel administr
 ## Funcionalidades
 
 **Site (clientes)**
-- Página inicial e cardápio com conteúdo editável pelo painel
+- Página inicial e cardápio
 - Montagem do pedido (tipo, tamanho e adicionais), carrinho e finalização
 - Pagamento **simulado** por cartão ou Pix (nenhum dado de cartão é armazenado ou enviado a terceiros)
 - Cadastro, login e recuperação de senha com ASP.NET Identity
@@ -18,7 +18,7 @@ Sistema completo para uma açaiteria: **site para clientes**, **painel administr
 - Dashboard com métricas de vendas, clientes e faturamento, e gráfico configurável
 - Cadastro e edição de pedidos, produtos e clientes
 - Gerenciamento de usuários
-- Edição do conteúdo do site e do cardápio, com upload de imagens
+- Nesta versão de portfólio o painel **não** edita a página inicial nem o cardápio, para que o acesso de demonstração não altere o site
 
 **API REST**
 - Endpoints de produtos, categorias, clientes e pedidos
@@ -65,12 +65,14 @@ acaiGalatico.UI               Aplicativo desktop (Windows Forms + Guna UI)
 ## Segurança
 
 - Painel administrativo protegido por `[Authorize(Roles = "Admin")]`
-- Nenhuma senha, chave ou string de conexão sensível no código: tudo vem de **user-secrets** (desenvolvimento) ou **variáveis de ambiente** (produção)
+- Nenhuma senha, chave ou string de conexão sensível no código: tudo vem de **user-secrets** (desenvolvimento) ou **variáveis de ambiente** (produção). A única exceção é a senha de demonstração do painel, que só vale em desenvolvimento
 - API protegida por chave enviada no cabeçalho `X-Api-Key`
-- Upload de imagens com validação de extensão e tamanho, e nome do arquivo gerado pelo servidor
+- Upload de imagens só em JPG/PNG, até 5 MB, conferindo extensão, tipo e os primeiros bytes do arquivo, com nome gerado pelo servidor (GUID)
 - Campos do formulário de contato codificados antes de entrar no e-mail
 - Proteção contra CSRF (`ValidateAntiForgeryToken`) nos formulários
 - Swagger disponível só em ambiente de desenvolvimento
+- Senha com no mínimo 8 caracteres e número, e bloqueio da conta por 15 minutos após 5 tentativas erradas
+- Cabeçalhos de segurança: `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `Referrer-Policy` e CSP `frame-ancestors 'self'`, além de HTTPS obrigatório (HSTS) em produção
 
 ## Como executar localmente
 

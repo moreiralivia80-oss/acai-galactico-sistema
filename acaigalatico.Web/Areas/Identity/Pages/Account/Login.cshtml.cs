@@ -115,7 +115,7 @@ namespace acaigalatico.Web.Areas.Identity.Pages.Account
                         user.UserName,
                         Input.Password,
                         Input.RememberMe,
-                        lockoutOnFailure: false
+                        lockoutOnFailure: true // ativa o bloqueio configurado no Program.cs
                     );
 
                     if (result.Succeeded)
@@ -126,6 +126,12 @@ namespace acaigalatico.Web.Areas.Identity.Pages.Account
                         // =======================================================================
 
                         return LocalRedirect(returnUrl);
+                    }
+
+                    if (result.IsLockedOut)
+                    {
+                        ErrorMessage = "Muitas tentativas erradas. Tente novamente em 15 minutos.";
+                        return RedirectToPage(new { isAdmin = isAdminLogin, returnUrl = returnUrl });
                     }
                 }
 

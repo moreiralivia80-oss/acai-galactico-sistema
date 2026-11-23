@@ -27,6 +27,10 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
     options.Password.RequiredLength = 8;
+
+    // Bloqueio por tentativas: 5 senhas erradas bloqueiam a conta por 15 minutos
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AppDbContext>();
@@ -70,21 +74,36 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// --- FIX PARA PREVIEW NO IDE (ERR_ABORTED) ---
-// Só em desenvolvimento: em produção o site não pode ser carregado dentro de iframes de outros domínios (clickjacking).
-if (app.Environment.IsDevelopment())
+// --- CABEÇALHOS DE SEGURANÇA ---
+// - X-Content-Type-Options: o navegador não "adivinha" o tipo do arquivo
+// - Referrer-Policy: não envia o endereço completo da página para outros sites
+// - X-Frame-Options e CSP frame-ancestors: o site não pode ser aberto dentro de
+//   iframes de outros domínios (proteção contra clickjacking). Em desenvolvimento
+//   essa parte fica liberada para o preview do Visual Studio funcionar.
+var emDesenvolvimento = app.Environment.IsDevelopment();
+app.Use(async (context, next) =>
 {
-    app.Use(async (context, next) =>
+    context.Response.OnStarting(() =>
     {
-        context.Response.OnStarting(() => {
-            context.Response.Headers.Remove("X-Frame-Options");
-            context.Response.Headers.Remove("Frame-Options");
-            context.Response.Headers["Content-Security-Policy"] = "frame-ancestors *";
-            return Task.CompletedTask;
-        });
-        await next();
+        var headers = context.Response.Headers;
+        headers["X-Content-Type-Options"] = "nosniff";
+        headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+
+        if (emDesenvolvimento)
+        {
+            headers.Remove("X-Frame-Options");
+            headers["Content-Security-Policy"] = "frame-ancestors *";
+        }
+        else
+        {
+            headers["X-Frame-Options"] = "SAMEORIGIN";
+            headers["Content-Security-Policy"] = "frame-ancestors 'self'";
+        }
+
+        return Task.CompletedTask;
     });
-}
+    await next();
+});
 
 // --- SEED AUTOMÁTICO ---
 using (var scope = app.Services.CreateScope())
@@ -131,6 +150,7 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
 app.UseStaticFiles();
