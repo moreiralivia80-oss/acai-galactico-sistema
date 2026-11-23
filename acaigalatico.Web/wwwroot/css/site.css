@@ -1114,3 +1114,100 @@ input {
     background: url('/images/galaxiaa.jpg?v=2') no-repeat center center/cover;
     position: relative;
 }
+
+/* =========================================================
+   MENU DO TOPO RESPONSIVO
+   - A partir de 992px o menu fica em linha.
+   - Abaixo de 992px vira o botão "hambúrguer" e os itens abrem em coluna.
+   - Os botões não têm mais largura mínima fixa (140px): encolhem e, se
+     faltar espaço, quebram para uma segunda linha em vez de sair da página.
+   ========================================================= */
+
+/* Telas grandes: menu em linha, botões compactos e com quebra de linha */
+@media (min-width: 992px) {
+    .navbar-collapse {
+        min-width: 0;
+    }
+
+    .navbar-nav {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        row-gap: 8px;
+    }
+
+    .navbar-nav .nav-link,
+    .navbar .nav-link {
+        min-width: 0;
+        height: 46px;
+        padding: 0 18px !important;
+        margin: 0 4px;
+        font-size: 1rem;
+    }
+}
+
+/* Notebooks menores (992px a 1399px): logo e botões mais compactos,
+   para o menu de quem está logado caber sem sair da tela */
+@media (min-width: 992px) and (max-width: 1399.98px) {
+    .logo-img {
+        max-height: 80px;
+    }
+
+    .navbar-brand {
+        margin-right: 0.75rem;
+    }
+
+    .navbar-nav.gap-2 {
+        gap: 4px !important;
+    }
+
+    .navbar-nav .nav-link,
+    .navbar .nav-link {
+        height: 42px;
+        padding: 0 12px !important;
+        margin: 0 2px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablets (768px a 991px): menu recolhido com botões em coluna */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .logo-img {
+        max-height: 80px;
+    }
+
+    .navbar-nav .nav-link,
+    .navbar .nav-link {
+        min-width: 0;
+        height: auto;
+        justify-content: flex-start;
+        padding: 10px 16px !important;
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .navbar-nav .nav-link:hover {
+        transform: none;
+    }
+}
+
+/* Menu recolhido (celular e tablet): itens ocupam a largura toda */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        padding-top: 10px;
+    }
+
+    .navbar-nav {
+        align-items: stretch;
+    }
+
+    .navbar-nav .nav-link,
+    .navbar .nav-link {
+        white-space: normal;
+    }
+
+    /* O menu do usuário abre dentro da lista, ocupando a largura toda */
+    .user-dropdown-menu {
+        position: static;
+        width: 100%;
+    }
+}

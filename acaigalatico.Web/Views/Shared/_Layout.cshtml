@@ -7,13 +7,13 @@
     <link rel="icon" type="image/png" href="~/images/logo-sem-escrita.png" />
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark">
+        <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-dark">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/images/logo.png" alt="Açaí Galáctico" class="logo-img" />
@@ -22,8 +22,8 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
-                    <ul class="navbar-nav gap-2">
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-end">
+                    <ul class="navbar-nav gap-2 align-items-lg-center">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
                                 <i class="fas fa-home me-1"></i> Início
