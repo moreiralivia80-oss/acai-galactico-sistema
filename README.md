@@ -4,6 +4,8 @@ Sistema completo para uma açaiteria: **site para clientes**, **painel administr
 
 🌐 **Site publicado:** [acaigalactico.runasp.net](https://acaigalactico.runasp.net)
 
+![Página inicial do Açaí Galáctico](docs/images/1795449023299_image.png)
+
 ## Funcionalidades
 
 **Site (clientes)**
