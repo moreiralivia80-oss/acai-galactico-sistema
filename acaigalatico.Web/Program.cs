@@ -95,8 +95,17 @@ using (var scope = app.Services.CreateScope())
         var db = services.GetRequiredService<AppDbContext>();
         db.Database.EnsureCreated();
         var seeding = services.GetRequiredService<acaigalatico.Infrastructure.SeedingService>();
-        // A senha do administrador inicial vem da configuração (user-secrets ou variável de ambiente), nunca do código.
-        seeding.SeedAsync(app.Configuration["AdminSeed:Password"]).GetAwaiter().GetResult();
+        // A senha do administrador inicial vem da configuração (user-secrets ou variável de ambiente).
+        // Para quem clona o projeto conseguir ver o painel, em DESENVOLVIMENTO existe uma senha de
+        // demonstração (documentada no README). Em produção ela nunca é usada: sem AdminSeed:Password
+        // configurada, o administrador não é criado.
+        const string SenhaDemonstracao = "admin123";
+        var senhaAdmin = app.Configuration["AdminSeed:Password"];
+        if (string.IsNullOrWhiteSpace(senhaAdmin) && app.Environment.IsDevelopment())
+        {
+            senhaAdmin = SenhaDemonstracao;
+        }
+        seeding.SeedAsync(senhaAdmin).GetAwaiter().GetResult();
     }
     catch (Exception ex)
     {

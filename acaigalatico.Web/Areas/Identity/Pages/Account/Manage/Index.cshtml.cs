@@ -182,8 +182,8 @@ namespace acaigalatico.Web.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToPage("/Account/Login");
 
-            // Impede a exclusão do usuário Adminacai
-            if (user.UserName.Equals("Adminacai", StringComparison.OrdinalIgnoreCase))
+            // Impede a exclusão do usuário administrador
+            if (user.UserName.Equals(acaigalatico.Infrastructure.SeedingService.UsuarioAdmin, StringComparison.OrdinalIgnoreCase))
             {
                 TempData["ErrorMessage"] = "A conta do administrador principal não pode ser excluída.";
                 return RedirectToPage();

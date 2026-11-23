@@ -87,7 +87,8 @@ dotnet restore
 Os valores abaixo ficam só na sua máquina (user-secrets) e **não vão para o repositório**. Use valores seus.
 
 ```bash
-# Site: senha do administrador criado no primeiro uso (mínimo 8 caracteres, com número)
+# Site (opcional): senha própria para o administrador (mínimo 8 caracteres, com número).
+# Se não configurar, em desenvolvimento é usada a senha de demonstração (veja abaixo).
 dotnet user-secrets set "AdminSeed:Password" "SuaSenhaLocal1" --project acaigalatico.Web
 
 # Site (opcional): envio de e-mail do formulário de contato
@@ -105,7 +106,20 @@ dotnet user-secrets set "Api:Key" "uma-chave-local-qualquer" --project AcaiGalat
 dotnet run --project acaigalatico.Web
 ```
 
-O banco SQLite é criado automaticamente na primeira execução, com produtos e pedidos de exemplo. O administrador inicial é o usuário `Adminacai`, com a senha definida em `AdminSeed:Password`.
+O banco SQLite é criado automaticamente na primeira execução, com produtos, clientes e pedidos **fictícios** de exemplo.
+
+#### Acesso de demonstração ao painel administrador
+
+Para conhecer o dashboard, clique em **Entrar** no menu, use os dados abaixo e depois clique em **Painel Admin**. Para ir direto ao painel após o login, use `/Identity/Account/Login?isAdmin=true`.
+
+| Usuário | Senha |
+|---|---|
+| `Administrador` | `admin123` |
+
+- Essa conta existe **só em ambiente de desenvolvimento** (rodando na sua máquina). Em produção a senha de demonstração nunca é usada: o administrador só é criado se `AdminSeed:Password` estiver configurada no servidor.
+- Se você configurou `AdminSeed:Password` (passo 1), a senha do administrador passa a ser a sua.
+- A senha só é definida quando o administrador é criado. Se o banco já existia com outra senha, apague o arquivo `.db` local para recriá-lo.
+- Todos os dados do painel (clientes, pedidos, faturamento) são fictícios e gerados pelo seed.
 
 ### 3. Rodar a API
 

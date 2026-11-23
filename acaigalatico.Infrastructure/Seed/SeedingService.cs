@@ -10,6 +10,9 @@ namespace acaigalatico.Infrastructure
 {
     public class SeedingService
     {
+        /// <summary>Nome de usuário do administrador criado pelo seed.</summary>
+        public const string UsuarioAdmin = "Administrador";
+
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -34,7 +37,7 @@ namespace acaigalatico.Infrastructure
             }
 
             // 1. Seed Admin User
-            var adminUser = await _userManager.FindByNameAsync("Adminacai");
+            var adminUser = await _userManager.FindByNameAsync(UsuarioAdmin);
             if (adminUser == null && string.IsNullOrWhiteSpace(senhaAdmin))
             {
                 Console.WriteLine("[SEED] AdminSeed:Password não configurada: o usuário administrador não foi criado.");
@@ -43,7 +46,7 @@ namespace acaigalatico.Infrastructure
             {
                 var user = new IdentityUser
                 {
-                    UserName = "Adminacai",
+                    UserName = UsuarioAdmin,
                     Email = "admin@acaigalatico.com",
                     EmailConfirmed = true
                 };
