@@ -299,9 +299,6 @@ namespace acaigalatico.Web.Controllers
                 TempData["ErrorMessage"] = "Erro ao criar produto: " + ex.Message;
             }
             
-            // Redireciona para onde veio (ou default)
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer.Contains("EditarSite")) return RedirectToAction("EditarSite");
             return RedirectToAction("Produtos");
         }
 
@@ -366,8 +363,6 @@ namespace acaigalatico.Web.Controllers
                 TempData["ErrorMessage"] = "Erro ao excluir produto: " + ex.Message;
             }
             
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer.Contains("EditarSite")) return RedirectToAction("EditarSite");
             return RedirectToAction("Produtos");
         }
 
@@ -507,141 +502,10 @@ namespace acaigalatico.Web.Controllers
         }
 
         // ================================
-        // 🔥 EDITAR SITE
+        // EDITAR SITE / CARDÁPIO: removidos nesta versão de portfólio.
+        // Como o README traz um login de demonstração, o painel não permite
+        // alterar o conteúdo da página inicial nem do cardápio.
         // ================================
-        [HttpGet]
-        public IActionResult EditarSite()
-        {
-            var model = _conteudoService.GetInicio();
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditarSite(ConteudoInicio model, List<IFormFile?> itemFiles, IFormFile? sobreImgFile, IFormFile? outrosImgFile)
-        {
-            try
-            {
-                // Upload da imagem principal (Hero)
-                var heroFile = Request.Form.Files["heroFile"];
-                if (heroFile != null && heroFile.Length > 0)
-                {
-                    model.ImagemUrl = await SaveUploadedFile(heroFile);
-                }
-
-                // Upload da imagem "Sobre Nós"
-                if (sobreImgFile != null && sobreImgFile.Length > 0)
-                {
-                    model.SobreImagemUrl = await SaveUploadedFile(sobreImgFile);
-                }
-
-                // Upload da imagem "Outros Produtos"
-                if (outrosImgFile != null && outrosImgFile.Length > 0)
-                {
-                    model.OutrosImagemUrl = await SaveUploadedFile(outrosImgFile);
-                }
-
-                // Upload das imagens dos itens de exposição
-                for (int i = 0; i < model.ItensExposicao.Count; i++)
-                {
-                    var itemFile = itemFiles != null && itemFiles.Count > i ? itemFiles[i] : null;
-                    if (itemFile != null && itemFile.Length > 0)
-                    {
-                        model.ItensExposicao[i].ImagemUrl = await SaveUploadedFile(itemFile);
-                    }
-                }
-
-                _conteudoService.UpdateInicio(model);
-                TempData["SuccessMessage"] = "Página inicial atualizada com sucesso!";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao atualizar site");
-                TempData["ErrorMessage"] = "Erro ao atualizar: " + ex.Message;
-            }
-
-            return RedirectToAction("EditarSite");
-        }
-
-        // --- EDITAR CARDÁPIO ---
-        [HttpGet]
-        public IActionResult EditarCardapio()
-        {
-            var model = _conteudoService.GetCardapioConteudo();
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditarCardapio(ConteudoCardapio model, IFormFile? backgroundFile)
-        {
-            try
-            {
-                if (backgroundFile != null && backgroundFile.Length > 0)
-                {
-                    model.BackgroundImage = await SaveUploadedFile(backgroundFile);
-                }
-
-                _conteudoService.UpdateCardapioConteudo(model);
-                TempData["SuccessMessage"] = "Cardápio atualizado com sucesso!";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao atualizar cardápio");
-                TempData["ErrorMessage"] = "Erro ao atualizar: " + ex.Message;
-            }
-
-            return RedirectToAction("EditarCardapio");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CriarItemCardapio(ItemCardapio item, IFormFile? file)
-        {
-            if (file != null && file.Length > 0)
-            {
-                item.ImagemUrl = await SaveUploadedFile(file);
-            }
-            else
-            {
-                item.ImagemUrl = "/images/produtos/default.png";
-            }
-
-            _conteudoService.AddItemCardapio(item);
-            TempData["SuccessMessage"] = "Item adicionado ao cardápio!";
-            return RedirectToAction("EditarCardapio");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AtualizarItemCardapio(ItemCardapio item, IFormFile? file)
-        {
-            var itemExistente = _conteudoService.GetItemCardapioById(item.Id);
-            if (itemExistente != null)
-            {
-                if (file != null && file.Length > 0)
-                {
-                    item.ImagemUrl = await SaveUploadedFile(file);
-                }
-                else
-                {
-                    item.ImagemUrl = itemExistente.ImagemUrl;
-                }
-
-                _conteudoService.UpdateItemCardapio(item);
-                TempData["SuccessMessage"] = "Item atualizado com sucesso!";
-            }
-            return RedirectToAction("EditarCardapio");
-        }
-
-        [HttpPost]
-        public IActionResult ExcluirItemCardapio(Guid id)
-        {
-            _conteudoService.DeleteItemCardapio(id);
-            TempData["SuccessMessage"] = "Item removido do cardápio!";
-            return RedirectToAction("EditarCardapio");
-        }
-
-        private Task<string> SaveUploadedFile(IFormFile file)
-        {
-            return acaigalatico.Web.Services.UploadImagem.SalvarAsync(file, _environment.WebRootPath, "site");
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -683,7 +547,7 @@ namespace acaigalatico.Web.Controllers
             {
                 TempData["ErrorMessage"] = "Erro ao resetar dados: " + ex.Message;
             }
-            return RedirectToAction("EditarSite");
+            return RedirectToAction("Index");
         }
 
         // ================================
